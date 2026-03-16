@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HapuchykOpti 2026 — освободи ОЗУ, CPU и GPU для игр</title>
+  <!-- Google Fonts: Inter (чистый, читаемый) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #F4F7FC;
+      color: #1A2634;
+      line-height: 1.6;
+      scroll-behavior: smooth;
+    }
+
+    .container {
+      max-width: 1300px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* Header */
+    header {
+      background: #FFFFFF;
+      box-shadow: 0 2px 15px rgba(0, 0, 0, 0.04);
+      padding: 18px 0;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      border-bottom: 1px solid #E2E8F0;
+    }
+
+    header .container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo {
+      font-size: 30px;
+      font-weight: 700;
+      color: #0C2942;
+      letter-spacing: -0.5px;
+    }
+
+    .logo span {
+      color: #2B6ED7;
+    }
+
+    .nav-btn {
+      background: transparent;
+      border: 1.5px solid #2B6ED7;
+      color: #2B6ED7;
+      padding: 12px 32px;
+      border-radius: 36px;
+      font-weight: 600;
+      font-size: 16px;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .nav-btn:hover {
+      background: #2B6ED7;
+      color: #FFFFFF;
+      border-color: #2B6ED7;
+    }
+
+    /* Hero */
+    .hero {
+      padding: 100px 0 90px;
+      background: linear-gradient(145deg, #FFFFFF 0%, #F0F5FD 100%);
+      text-align: center;
+    }
+
+    .hero h1 {
+      font-size: 60px;
+      font-weight: 700;
+      line-height: 1.2;
+      margin-bottom: 25px;
+      color: #0C2942;
+    }
+
+    .hero h1 span {
+      color: #2B6ED7;
+      border-bottom: 4px solid #2B6ED7;
+      display: inline-block;
+      padding-bottom: 6px;
+    }
+
+    .hero p {
+      font-size: 22px;
+      color: #475569;
+      max-width: 800px;
+      margin: 0 auto 30px;
+    }
+
+    .btn-primary {
+      background: #2B6ED7;
+      color: #FFFFFF;
+      border: none;
+      padding: 18px 52px;
+      border-radius: 50px;
+      font-weight: 600;
+      font-size: 20px;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+      text-decoration: none;
+      display: inline-block;
+      box-shadow: 0 10px 25px rgba(43, 110, 215, 0.3);
+    }
+
+    .btn-primary:hover {
+      background: #1E4FA0;
+      transform: translateY(-2px);
+    }
+
+    /* Sections */
+    .section {
+      padding: 90px 0;
+    }
+
+    .section-light {
+      background: #FFFFFF;
+    }
+
+    .section-gray {
+      background: #F4F7FC;
+    }
+
+    .section-title {
+      font-size: 42px;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 20px;
+      color: #0C2942;
+    }
+
+    .section-desc {
+      font-size: 20px;
+      text-align: center;
+      color: #475569;
+      max-width: 900px;
+      margin: 0 auto 50px;
+    }
+
+    /* Grid */
+    .grid-2, .grid-3 {
+      display: grid;
+      gap: 35px;
+    }
+
+    .grid-2 {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .grid-3 {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    @media (max-width: 768px) {
+      .grid-2, .grid-3 {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Cards */
+    .card {
+      background: #FFFFFF;
+      border-radius: 28px;
+      padding: 36px 32px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.02);
+      border: 1px solid #E9EDF2;
+      transition: all 0.25s;
+    }
+
+    .card:hover {
+      box-shadow: 0 20px 35px rgba(0, 0, 0, 0.05);
+      border-color: #B8CCE0;
+    }
+
+    .card h3 {
+      font-size: 26px;
+      font-weight: 600;
+      margin-bottom: 18px;
+      color: #0C2942;
+    }
+
+    .card p {
+      color: #3E4E62;
+      font-size: 17px;
+      margin-bottom: 15px;
+    }
+
+    .badge {
+      display: inline-block;
+      background: #E1EBFA;
+      color: #2B6ED7;
+      font-weight: 600;
+      padding: 6px 16px;
+      border-radius: 40px;
+      font-size: 14px;
+      margin-bottom: 20px;
+    }
+
+    /* Feature block */
+    .feature-block {
+      display: flex;
+      align-items: center;
+      gap: 60px;
+      flex-wrap: wrap;
+    }
+
+    .feature-text {
+      flex: 1;
+    }
+
+    .feature-text h2 {
+      font-size: 38px;
+      font-weight: 700;
+      margin-bottom: 25px;
+      color: #0C2942;
+    }
+
+    .feature-text p {
+      font-size: 18px;
+      color: #3E4E62;
+      margin-bottom: 25px;
+    }
+
+    .feature-stats {
+      background: #E1EBFA;
+      padding: 28px 35px;
+      border-radius: 24px;
+      border-left: 6px solid #2B6ED7;
+    }
+
+    .feature-stats div {
+      font-size: 18px;
+      margin-bottom: 12px;
+    }
+
+    .feature-stats strong {
+      color: #0C2942;
+      font-size: 28px;
+    }
+
+    .feature-image {
+      flex: 1;
+      background: #D2E0F0;
+      min-height: 300px;
+      border-radius: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      color: #2A4B7A;
+      font-weight: 500;
+      border: 1px solid #B8CCE0;
+      box-shadow: inset 0 2px 8px rgba(0,0,0,0.02);
+    }
+
+    /* Process list */
+    .process-list {
+      list-style: none;
+      padding: 0;
+      margin-top: 20px;
+    }
+    .process-list li {
+      padding: 12px 0;
+      border-bottom: 1px dashed #DCE3EC;
+      font-size: 17px;
+      color: #2E3F54;
+    }
+    .process-list li:last-child {
+      border-bottom: none;
+    }
+    .process-list strong {
+      color: #0C2942;
+      font-weight: 600;
+    }
+
+    /* Requirements */
+    .req-list {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 40px;
+      margin-top: 30px;
+    }
+
+    .req-item {
+      background: #FFFFFF;
+      border: 1px solid #E9EDF2;
+      border-radius: 36px;
+      padding: 26px 36px;
+      min-width: 200px;
+      text-align: center;
+    }
+
+    .req-item h4 {
+      font-size: 18px;
+      color: #64748B;
+      font-weight: 500;
+      margin-bottom: 8px;
+    }
+
+    .req-item p {
+      font-size: 22px;
+      font-weight: 600;
+      color: #0C2942;
+    }
+
+    /* Testimonials */
+    .testimonials {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 30px;
+      margin-top: 40px;
+    }
+
+    .testimonial {
+      background: #FFFFFF;
+      border-radius: 28px;
+      padding: 32px;
+      border: 1px solid #E9EDF2;
+    }
+
+    .testimonial p {
+      font-size: 17px;
+      font-style: italic;
+      color: #2E3F54;
+      margin-bottom: 20px;
+    }
+
+    .testimonial-author {
+      font-weight: 600;
+      color: #0C2942;
+    }
+
+    .testimonial-title {
+      font-size: 14px;
+      color: #64748B;
+    }
+
+    /* Download */
+    .download-section {
+      background: #FFFFFF;
+      border-top: 1px solid #E2E8F0;
+      border-bottom: 1px solid #E2E8F0;
+      padding: 90px 0;
+      text-align: center;
+    }
+
+    .download-card {
+      max-width: 850px;
+      margin: 0 auto;
+      background: #F0F5FD;
+      padding: 70px 50px;
+      border-radius: 60px;
+    }
+
+    .download-card h2 {
+      font-size: 48px;
+      font-weight: 700;
+      margin-bottom: 25px;
+      color: #0C2942;
+    }
+
+    .download-card p {
+      font-size: 22px;
+      color: #3E4E62;
+      margin-bottom: 45px;
+    }
+
+    .btn-download {
+      background: #2B6ED7;
+      color: white;
+      border: none;
+      padding: 22px 80px;
+      border-radius: 70px;
+      font-weight: 700;
+      font-size: 26px;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+      text-decoration: none;
+      display: inline-block;
+      box-shadow: 0 20px 35px rgba(43, 110, 215, 0.3);
+    }
+
+    .btn-download:hover {
+      background: #1E4FA0;
+      transform: scale(1.02);
+    }
+
+    .file-size {
+      display: inline-block;
+      margin-top: 20px;
+      font-size: 18px;
+      color: #64748B;
+      background: #E9EDF2;
+      padding: 8px 20px;
+      border-radius: 40px;
+    }
+
+    /* Footer */
+    footer {
+      background: #FFFFFF;
+      padding: 45px 0;
+      border-top: 1px solid #E2E8F0;
+      color: #5F6C80;
+      text-align: center;
+      font-size: 16px;
+    }
+
+    /* Adaptive */
+    @media (max-width: 768px) {
+      .hero h1 {
+        font-size: 44px;
+      }
+      .section-title {
+        font-size: 36px;
+      }
+      .feature-block {
+        flex-direction: column;
+      }
+      .btn-download {
+        font-size: 22px;
+        padding: 18px 50px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <div class="logo">Hapuchyk<span>Opti</span></div>
+    <a href="#download" class="nav-btn">Скачать</a>
+  </div>
+</header>
+
+<main>
+  <!-- Hero -->
+  <section class="hero">
+    <div class="container">
+      <h1>Hapuchyk<span>Opti</span> 2026</h1>
+      <p>Оптимизатор, который выключает проводник, рабочий стол и останавливает десятки фоновых процессов, чтобы освободить оперативную память, процессор и видеокарту для ваших игр. Вес программы — всего 40 МБ.</p>
+      <a href="#download" class="btn-primary">Скачать бесплатно</a>
+    </div>
+  </section>
+
+  <!-- Что отключает -->
+  <section class="section section-light">
+    <div class="container">
+      <h2 class="section-title">Какие процессы и «фигню» убирает HapuchykOpti</h2>
+      <p class="section-desc">Мы проанализировали сотни фоновых задач Windows, которые жрут ОЗУ, грузят CPU и видеокарту без вашего ведома. Вот что останавливает оптимизатор:</p>
+      <div class="grid-2">
+        <div class="card">
+          <h3>🖥️ Проводник и рабочий стол</h3>
+          <p>explorer.exe, dwm.exe (менеджер окон), фон рабочего стола, иконки, панель задач — всё это полностью выгружается из памяти. Освобождается до 2,5 ГБ ОЗУ и снижается нагрузка на GPU.</p>
+        </div>
+        <div class="card">
+          <h3>🗑️ Ненужные службы Windows</h3>
+          <p>Superfetch, SysMain, Windows Search, диагностика, телеметрия, центр обновлений, печать (если не нужна), Xbox Game Bar и другие. Список обновляется под каждую версию Windows 10/11.</p>
+        </div>
+        <div class="card">
+          <h3>📦 Фоновые приложения</h3>
+          <p>OneDrive, Skype, Teams, Spotify, браузеры в трее, торрент-клиенты, офисные помощники, облачные синхронизации — всё, что висит в фоне и отнимает ресурсы.</p>
+        </div>
+        <div class="card">
+          <h3>⚙️ Визуальные эффекты и телеметрия</h3>
+          <p>Отключаются анимации, прозрачность, тени, сглаживание шрифтов (на время игры), а также службы сбора данных, которые постоянно что-то пишут на диск.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Главная фича (расширенная) -->
+  <section class="section section-gray">
+    <div class="container feature-block">
+      <div class="feature-text">
+        <h2>Как HapuchykOpti освобождает ОЗУ, процессор и видеокарту</h2>
+        <p>Когда вы запускаете игру через HapuchykOpti, программа выполняет комплексную очистку:</p>
+        <ul class="process-list">
+          <li><strong>ОЗУ:</strong> завершает до 40-50 фоновых процессов, чистит кэш, выгружает ненужные DLL. В среднем освобождается <strong>3–5 ГБ оперативной памяти</strong>.</li>
+          <li><strong>Процессор:</strong> приостанавливает службы телеметрии, индексации, обновлений. Снижает фоновую нагрузку на CPU до <strong>20–30%</strong>, отдавая все ядра игре.</li>
+          <li><strong>Видеокарта:</strong> отключает оверлеи (NVIDIA/AMD), запись фона, DWM-композитинг. Увеличивает доступную память GPU и снижает латентность.</li>
+        </ul>
+        <div class="feature-stats" style="margin-top: 30px;">
+          <div><strong>+ 30–60% FPS</strong> в играх (зависит от системы)</div>
+          <div><strong>до 5 ГБ</strong> свободной ОЗУ</div>
+          <div><strong>всего 40 МБ</strong> — вес программы, не нагружает диск</div>
+        </div>
+      </div>
+      <div class="feature-image">
+        Фоновые процессы → остановлены
+      </div>
+    </div>
+  </section>
+
+  <!-- Подробности об отключаемых компонентах (ещё текст) -->
+  <section class="section section-light">
+    <div class="container">
+      <h2 class="section-title">Что именно отключается перед игрой</h2>
+      <div class="grid-3">
+        <div class="card">
+          <h3>Проводник Windows</h3>
+          <p>explorer.exe — полностью закрывается. Рабочий стол, панель задач, трей пропадают. После игры автоматически восстанавливаются.</p>
+          <p><strong>Экономия:</strong> 150–400 МБ ОЗУ + нагрузка на GPU.</p>
+        </div>
+        <div class="card">
+          <h3>Службы и драйверы</h3>
+          <p>Останавливаются: SysMain, WSearch, DiagTrack, dmwappushservice, Xbox Live, Print Spooler, Bluetooth (если не нужен), и другие. Полный список — более 30 служб.</p>
+        </div>
+        <div class="card">
+          <h3>Телеметрия и обновления</h3>
+          <p>Отключаются задачи планировщика, которые проверяют обновления и отправляют данные. Прекращается постоянная запись на диск.</p>
+        </div>
+        <div class="card">
+          <h3>Оверлеи и запись</h3>
+          <p>Отключаются Game Bar, NVIDIA ShadowPlay, AMD ReLive, Discord оверлей (опционально). Это снижает задержки и даёт +5-10% FPS.</p>
+        </div>
+        <div class="card">
+          <h3>Фоновые приложения из магазина</h3>
+          <p>Все UWP-приложения (Калькулятор, Почта, Календарь, Xbox, Spotify) принудительно закрываются. Они часто висят в памяти даже в простое.</p>
+        </div>
+        <div class="card">
+          <h3>Сетевые оптимизации</h3>
+          <p>Настраивается приоритет трафика для игры, отключается автоматическая настройка TCP, Nagle-алгоритм для снижения пинга.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Системные требования + упоминание 2026 -->
+  <section class="section section-gray">
+    <div class="container">
+      <h2 class="section-title">Совместимость с Windows в 2026 году</h2>
+      <p class="section-desc">HapuchykOpti протестирован на Windows 10 (все версии) и Windows 11 23H2/24H2. Полностью поддерживает актуальные обновления 2026 года.</p>
+      <div class="req-list">
+        <div class="req-item">
+          <h4>ОС</h4>
+          <p>Windows 10 / 11</p>
+        </div>
+        <div class="req-item">
+          <h4>Архитектура</h4>
+          <p>x64 / x86</p>
+        </div>
+        <div class="req-item">
+          <h4>ОЗУ</h4>
+          <p>от 2 ГБ</p>
+        </div>
+        <div class="req-item">
+          <h4>Место</h4>
+          <p>40 МБ</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Отзывы -->
+  <section class="section section-light">
+    <div class="container">
+      <h2 class="section-title">Игроки о HapuchykOpti</h2>
+      <div class="testimonials">
+        <div class="testimonial">
+          <p>«Раньше в Cyberpunk 2077 было 45-50 FPS, после запуска через HapuchykOpti — стабильные 75-80. Проводник отключился, рабочий стол пропал, но игра летала. И главное — всё вернулось после выхода.»</p>
+          <div class="testimonial-author">Артём М.</div>
+          <div class="testimonial-title">RTX 3060, 16 ГБ</div>
+        </div>
+        <div class="testimonial">
+          <p>«На старом ноутбуке с i5 и 8 ГБ ОЗУ перестали лагать даже доты. Программа реально освобождает память, я сам смотрел в диспетчере — до 4 ГБ свободно становилось. В 2026 году такие оптимизаторы необходимы.»</p>
+          <div class="testimonial-author">Екатерина В.</div>
+          <div class="testimonial-title">i5-8250U, MX150</div>
+        </div>
+        <div class="testimonial">
+          <p>«У меня 32 ГБ, но всё равно фоновые процессы жрали 20% процессора. HapuchykOpti почистил всё, теперь в Valorant 300+ FPS стабильно. Отключает даже оверлей GeForce Experience — это круто.»</p>
+          <div class="testimonial-author">Денис К.</div>
+          <div class="testimonial-title">Ryzen 7, RTX 3070</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Секция скачивания -->
+  <section id="download" class="download-section">
+    <div class="container download-card">
+      <h2>Загрузить HapuchykOpti 2026</h2>
+      <p>Версия 3.5.2 • 40 МБ • Для Windows 10/11 • Русский интерфейс</p>
+      <a href="https://drive.usercontent.google.com/download?id=18uSCKMc7XigWgxe7BX_eXT2JCWqf4cog&export=download" target="_blank" rel="noopener noreferrer" class="btn-download">Скачать</a>
+      <div class="file-size">актуально на 2026 год</div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="container">
+    <p>HapuchykOpti — бесплатный оптимизатор для геймеров. Программа временно приостанавливает системные процессы и службы, полностью восстанавливая их после игры. Мы не собираем данные, не показываем рекламу.</p>
+    <p style="margin-top: 20px;">© 2026 HapuchykOpti. Все права защищены. По всем вопросам: support@hapuchykopti.ru</p>
+  </div>
+</footer>
+
+<!-- Скрипт плавного скролла -->
+<script>
+  (function() {
+    const header = document.querySelector('header');
+    const headerHeight = header ? header.offsetHeight : 0;
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        const targetId = this.getAttribute('href');
+        if (targetId === '#') return;
+        const target = document.querySelector(targetId);
+        if (target) {
+          e.preventDefault();
+          const targetPos = target.getBoundingClientRect().top + window.scrollY - headerHeight - 20; // небольшой отступ
+          window.scrollTo({ top: targetPos, behavior: 'smooth' });
+        }
+      });
+    });
+  })();
+</script>
+
+</body>
+</html>
